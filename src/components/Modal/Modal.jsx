@@ -1,40 +1,70 @@
-import { Component } from 'react';
+// import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
 import css from '../Modal/Modal.module.css';
+import { useEffect } from 'react';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export default class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
+export default function Modal(onClose, children) {
+  useEffect(() => {
+    const handleKeyDown = evt => {
+      if (evt.code === 'Escape') {
+        onClose();
+      }
+    };
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
+    window.addEventListener('keydown', handleKeyDown);
 
-  handleKeyDown = evt => {
-    if (evt.code === 'Escape') {
-      this.props.onClose();
-    }
-  };
+    return () => {
+      window.removeEventListener('keydown', this.handleKeyDown);
+    };
+  }, [onClose]);
 
-  handleOverlayClick = evt => {
+  const handleOverlayClick = evt => {
     if (evt.currentTarget === evt.target) {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  render() {
-    return createPortal(
-      <div className={css.overlay} onClick={this.handleOverlayClick}>
-        <div className={css.modal}>{this.props.children}</div>
-      </div>,
-      modalRoot
-    );
-  }
+  return createPortal(
+    <div className={css.overlay} onClick={handleOverlayClick}>
+      <div className={css.modal}>{children}</div>
+    </div>,
+    modalRoot
+  );
 }
+
+// export default class Modal extends Component {
+//   componentDidMount() {
+//     window.addEventListener('keydown', this.handleKeyDown);
+//   }
+
+//   componentWillUnmount() {
+//     window.removeEventListener('keydown', this.handleKeyDown);
+//   }
+
+//   handleKeyDown = evt => {
+//     if (evt.code === 'Escape') {
+//       this.props.onClose();
+//     }
+//   };
+
+//   handleOverlayClick = evt => {
+//     if (evt.currentTarget === evt.target) {
+//       this.props.onClose();
+//     }
+//   };
+
+//   render() {
+//     return createPortal(
+//       <div className={css.overlay} onClick={this.handleOverlayClick}>
+//         <div className={css.modal}>{this.props.children}</div>
+//       </div>,
+//       modalRoot
+//     );
+//   }
+// }
 
 Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
