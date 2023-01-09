@@ -30,8 +30,13 @@ export function App() {
             return response.json();
           }
         })
-        .then(images => {                if (page === 1) {          setImages([...images.hits])          return;        }        setImages(prev => [...prev, ...images.hits]);      })
-        // .then(images => setImages(images.hits))
+        // .then(images => {
+        //   if (page === 1) {
+        //     setImages([...images.hits])
+        //     return;
+        //   } setImages(prev => [...prev, ...images.hits]);
+        // })
+        .then(images => setImages(images.hits))
         .catch(error => console.log(error))
         .finally(() => {
           setLoading(false);
