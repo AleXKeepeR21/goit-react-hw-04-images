@@ -46,11 +46,11 @@ export function App() {
   }, [query, page]);
 
   const handleFormSubmit = query => {
-    if (query === query) {
-      toast.error('You enter the same word!🦄 Enter new one!', {
-        theme: 'colored',
-      });
-    }
+    // if (query === query) {
+    //   toast.error('You enter the same word!🦄 Enter new one!', {
+    //     theme: 'colored',
+    //   });
+    // }
 
     setQuery(query);
     setPage(1);
