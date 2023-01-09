@@ -6,6 +6,7 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
 import { ToastContainer } from 'react-toastify';
+// import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import css from './App.module.css';
 import { useState, useEffect } from 'react';
@@ -20,8 +21,7 @@ export function App() {
   const [imageAlt, setImageAlt] = useState('');
 
   useEffect(() => {
-    // query === ''
-    if (!query) {
+    if (query !== '') {
       setLoading(true);
 
       fetchImage(query, page)
@@ -30,47 +30,29 @@ export function App() {
             return response.json();
           }
         })
-        // .then(images => {
-        //   if (page === 1) {
-        //     setImages([...images.hits])
-        //     return;
-        //   } setImages(prev => [...prev, ...images.hits]);
-        // })
-        .then(images => setImages(images.hits))
+        .then(images => {
+          if (page === 1) {
+            setImages([...images.hits]);
+            return;
+          }
+          setImages(prev => [...prev, ...images.hits]);
+        })
+
         .catch(error => console.log(error))
         .finally(() => {
           setLoading(false);
-          setPage(page + 1);
         });
     }
   }, [query, page]);
 
   const handleFormSubmit = query => {
-    // if (query === query) {
-    //   toast.error('You enter the same word!🦄 Enter new one!', {
-    //     theme: 'colored',
-    //   });
-    // }
-
     setQuery(query);
     setPage(1);
     setImages([]);
   };
 
   const loadMoreImages = () => {
-    setLoading(true);
-    fetchImage(query, page)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then(images => setImages([...images, ...images.hits]))
-      .catch(error => console.log(error))
-      .finally(() => {
-        setLoading(false);
-        setPage(page + 1);
-      });
+    setPage(page + 1);
   };
 
   const toggleModal = (modalImage, imageAlt) => {
